@@ -17,25 +17,82 @@ class App extends Component
   }
   solve()
   {
-
+    let i,j,k
+    for(i=0; i<9; ++i)
+		{
+			for( j=0; j<9; ++j)
+			{
+				if(this.state.puzzle[i][j] === 0)
+				{
+					for( k=1; k<10; ++k)
+					{
+						if(this.possible(i, j, k))
+						{
+							this.setState(prev => prev.puzzle[i][j] = k)
+							this.solve();
+							this.setState(prev => prev.puzzle[i][j] = 0)
+						}
+					}
+					return; 
+				}
+				
+			}
+    }
+    setTimeout(console.log("hi"),100000000)
   }
 
-  possible(value)
+  possible(x,y,n)
   {
-
+    let i,j,x0,y0
+    for( i=0; i<9; ++i)
+		{
+			if(this.state.puzzle[i][y] === n)
+			{
+				return false;
+			}
+		}
+		for( i=0; i<9; ++i)
+		{
+			if(this.state.puzzle[x][i] === n)
+			{
+				return false;
+			}
+    }
+    
+		x0 = this.find(x);
+    y0 = this.find(y);
+    
+		for(i=x0; i<=x0+2; ++i)
+		{
+			for(j=y0; j<=y0+2; ++j)
+			{
+				if(this.state.puzzle[i][j] === n) return false;
+			}
+		}
+		console.log("yes")
+		return true;
   }
 
-  find()
+  find(n)
   {
-
+    if(n <3) return 0;
+		else if(n<6) return 3;
+		else return 6;
   }
 
 
   render()
   {
+    this.solve()
+    
     return(
-      <div>
-        {this.state.puzzle}
+      <div style={{"paddingLeft":"500px"}}>
+        <h1>Sudoku Solver</h1>
+        {
+          
+          this.state.puzzle
+            .map(nums => <h2>{nums.map(num => num+" ")}</h2>)
+        }
       </div>
     )
   }
